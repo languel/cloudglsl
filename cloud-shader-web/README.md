@@ -30,8 +30,21 @@ The following parameters can be controlled through the UI:
 - **Cloud Cover**: Adjusts the overall cloud coverage.
 - **Cloud Alpha**: Controls the transparency of the clouds.
 - **Sky Tint**: Adjusts the tint of the sky.
+- **Direction X/Y**: Controls the direction of cloud movement.
+- **Auto Animate**: Toggles automatic animation of noise seed.
+- **Animation Speed**: Controls the speed of automatic animation.
+- **Noise Seed**: Sets the seed value for the noise pattern.
+- **Noise Offset**: Adjusts the offset of the noise pattern.
+- **Noise Scale**: Controls the spatial frequency of the noise pattern independently from cloud scale.
+- **Cloud Color**: Sets the base color of the clouds.
+- **Sky Colors**: Controls the top and bottom colors of the sky gradient.
 
 Feel free to experiment with these parameters to create different cloud effects.
+
+## Keyboard Shortcuts
+
+- **Alt+U**: Toggle the entire UI on/off.
+- Use the minimize button (−) to collapse the controls panel while keeping the header visible.
 
 ## Initial inspiration
 

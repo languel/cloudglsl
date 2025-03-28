@@ -35,6 +35,7 @@ document.addEventListener('DOMContentLoaded', () => {
         moveDirection: [1.0, 0.0],    // Direction vector for cloud movement (x, y)
         u_seed: 0.0,                  // Seed parameter
         u_noiseOffset: 0.0,           // Noise offset parameter
+        u_noiseScale: 1.0,            // Noise scale parameter (default to 1.0)
         animationSpeed: 0.05          // Animation speed parameter
     };
     
@@ -226,7 +227,8 @@ function drawScene(gl, program, bufferInfo, params, currentTime) {
         cloudcolour: gl.getUniformLocation(program, 'cloudcolour'),
         moveDirection: gl.getUniformLocation(program, 'moveDirection'),
         u_seed: gl.getUniformLocation(program, 'u_seed'),
-        u_noiseOffset: gl.getUniformLocation(program, 'u_noiseOffset')
+        u_noiseOffset: gl.getUniformLocation(program, 'u_noiseOffset'),
+        u_noiseScale: gl.getUniformLocation(program, 'u_noiseScale')
     };
     
     gl.uniform3f(uniformLocations.iResolution, gl.canvas.width, gl.canvas.height, 1.0);
@@ -246,6 +248,7 @@ function drawScene(gl, program, bufferInfo, params, currentTime) {
     // Always pass the noise parameters from the params object
     gl.uniform1f(uniformLocations.u_seed, params.u_seed);
     gl.uniform1f(uniformLocations.u_noiseOffset, params.u_noiseOffset);
+    gl.uniform1f(uniformLocations.u_noiseScale, params.u_noiseScale);
     
     // Draw the rectangle
     gl.drawArrays(gl.TRIANGLE_STRIP, 0, bufferInfo.vertexCount);
@@ -269,6 +272,7 @@ function setupControls(params) {
         // Add noise controls
         noiseSeed: document.getElementById('noiseSeed'),
         noiseOffset: document.getElementById('noiseOffset'),
+        noiseScale: document.getElementById('noiseScale'),
         // Add animation speed control
         animationSpeed: document.getElementById('animationSpeed'),
         // Add color pickers
@@ -291,6 +295,7 @@ function setupControls(params) {
         // Add noise value displays
         noiseSeed: document.getElementById('noiseSeed-value'),
         noiseOffset: document.getElementById('noiseOffset-value'),
+        noiseScale: document.getElementById('noiseScale-value'),
         // Add animation speed value display
         animationSpeed: document.getElementById('animationSpeed-value')
     };
@@ -363,6 +368,12 @@ function setupControls(params) {
                     const uniformName = param === 'noiseSeed' ? 'u_seed' : 'u_noiseOffset';
                     params[uniformName] = value;
                     valueElements[param].textContent = value.toFixed(2); // Changed to 2 decimals
+                });
+            } else if (param === 'noiseScale') {
+                // Special handling for noise scale
+                controls[param].addEventListener('input', (e) => {
+                    params.u_noiseScale = parseFloat(e.target.value);
+                    valueElements[param].textContent = params.u_noiseScale.toFixed(2);
                 });
             } else if (param === 'animationSpeed') {
                 // Special handling for animation speed

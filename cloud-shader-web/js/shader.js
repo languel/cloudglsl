@@ -20,6 +20,8 @@ uniform vec2 moveDirection; // Cloud movement (x,y)
 uniform float u_seed;
 // NEW: Continuous noise offset to morph clouds smoothly
 uniform float u_noiseOffset;
+// New: Noise scale factor independent of cloud scale
+uniform float u_noiseScale;
 
 const mat2 m = mat2( 1.6,  1.2, -1.2,  1.6 );
 
@@ -29,6 +31,8 @@ vec2 hash( vec2 p ) {
 }
 
 float noise( in vec2 p ) {
+    // Apply noise scale to input coordinates
+    p = p * u_noiseScale;
     // shift the input coordinates with the seed
     p += vec2(u_seed);
     const float K1 = 0.366025404; // (sqrt(3)-1)/2;
