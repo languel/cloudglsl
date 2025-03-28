@@ -27,57 +27,62 @@
         </div>
         <div class="controls-content">
             <div class="control-group">
-                <label for="cloudscale">Cloud Scale:</label>
+                <label for="cloudscale">0. Cloud Scale:</label>
                 <span id="cloudscale-value">1.1</span>
                 <input type="range" id="cloudscale" min="0.1" max="3.0" step="0.01" value="1.1">
             </div>
             <div class="control-group">
-                <label for="speed">Speed:</label>
+                <label for="speed">1. Speed:</label>
                 <span id="speed-value">0.03</span>
                 <input type="range" id="speed" min="0.0" max="0.1" step="0.001" value="0.03">
             </div>
             <div class="control-group">
-                <label for="clouddark">Cloud Darkness:</label>
+                <label for="clouddark">2. Cloud Darkness:</label>
                 <span id="clouddark-value">0.5</span>
                 <input type="range" id="clouddark" min="0.0" max="1.0" step="0.01" value="0.5">
             </div>
             <div class="control-group">
-                <label for="cloudlight">Cloud Lightness:</label>
+                <label for="cloudlight">3. Cloud Lightness:</label>
                 <span id="cloudlight-value">0.3</span>
                 <input type="range" id="cloudlight" min="0.0" max="1.0" step="0.01" value="0.3">
             </div>
             <div class="control-group">
-                <label for="cloudcover">Cloud Cover:</label>
+                <label for="cloudcover">4. Cloud Cover:</label>
                 <span id="cloudcover-value">0.2</span>
                 <input type="range" id="cloudcover" min="0.0" max="1.0" step="0.01" value="0.2">
             </div>
             <div class="control-group">
-                <label for="cloudalpha">Cloud Alpha:</label>
+                <label for="cloudalpha">5. Cloud Alpha:</label>
                 <span id="cloudalpha-value">8.0</span>
                 <input type="range" id="cloudalpha" min="0.0" max="20.0" step="0.1" value="8.0">
             </div>
             <div class="control-group">
-                <label for="skytint">Sky Tint:</label>
+                <label for="skytint">6. Sky Tint:</label>
                 <span id="skytint-value">0.5</span>
                 <input type="range" id="skytint" min="0.0" max="1.0" step="0.01" value="0.5">
             </div>
             <!-- Direction controls with smaller steps -->
             <div class="control-group">
-                <label for="directionX">Direction X:</label>
+                <label for="directionX">8. Direction X:</label>
                 <span id="directionX-value">1.0</span>
                 <input type="range" id="directionX" min="-1.0" max="1.0" step="0.001" value="1.0">
             </div>
             <div class="control-group">
-                <label for="directionY">Direction Y:</label>
+                <label for="directionY">9. Direction Y:</label>
                 <span id="directionY-value">0.0</span>
                 <input type="range" id="directionY" min="-1.0" max="1.0" step="0.001" value="0.0">
+            </div>
+            <div class="control-group">
+                <label for="interpolationTime">MIDI Interpolation Time (s):</label>
+                <span id="interpolationTime-value">0.5</span>
+                <input type="range" id="interpolationTime" min="0.0" max="10.0" step="0.1" value="0.5">
             </div>
             <div class="control-group">
                 <label for="autoAnimate">Auto Animate:</label>
                 <input type="checkbox" id="autoAnimate">
             </div>
             <div class="control-group">
-                <label for="animationSpeed">Animation Speed:</label>
+                <label for="animationSpeed">10. Animation Speed:</label>
                 <span id="animationSpeed-value">0.05</span>
                 <input type="range" id="animationSpeed" min="0.01" max="0.2" step="0.001" value="0.05">
             </div>
@@ -87,12 +92,12 @@
                 <input type="range" id="noiseSeed" min="0.0" max="10.0" step="0.01" value="0.0">
             </div>
             <div class="control-group">
-                <label for="noiseOffset">Noise Offset:</label>
+                <label for="noiseOffset">11. Noise Offset:</label>
                 <span id="noiseOffset-value">0.0</span>
                 <input type="range" id="noiseOffset" min="0.0" max="10.0" step="0.01" value="0.0">
             </div>
             <div class="control-group">
-                <label for="noiseScale">Noise Scale:</label>
+                <label for="noiseScale">7. Noise Scale:</label>
                 <span id="noiseScale-value">1.0</span>
                 <input type="range" id="noiseScale" min="0.1" max="5.0" step="0.01" value="1.0">
             </div>
@@ -101,15 +106,15 @@
             <div class="control-section">
                 <h4>Color Controls</h4>
                 <div class="control-group">
-                    <label for="cloudColor">Cloud Color:</label>
+                    <label for="cloudColor">12-14. Cloud Color (R,G,B):</label>
                     <input type="color" id="cloudColor" value="#FFFCE5">
                 </div>
                 <div class="control-group">
-                    <label for="skyColor1">Sky Color (Top):</label>
+                    <label for="skyColor1">15-17. Sky Color Top (R,G,B):</label>
                     <input type="color" id="skyColor1" value="#334D99">
                 </div>
                 <div class="control-group">
-                    <label for="skyColor2">Sky Color (Bottom):</label>
+                    <label for="skyColor2">18-20. Sky Color Bottom (R,G,B):</label>
                     <input type="color" id="skyColor2" value="#6BB2FF">
                 </div>
             </div>
