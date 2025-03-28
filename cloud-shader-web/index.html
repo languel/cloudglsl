@@ -23,7 +23,7 @@
     <div id="controls" class="controls">
         <div class="controls-header">
             <h3>Shader Controls</h3>
-            <button id="toggle-controls">Hide</button>
+            <button id="toggle-controls" title="Minimize controls panel"><span class="minimize-icon"></span></button>
         </div>
         <div class="controls-content">
             <div class="control-group">
@@ -114,50 +114,5 @@
     <!-- Important: Load shader.js before main.js -->
     <script src="js/shader.js"></script>
     <script src="js/main.js"></script>
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            console.log('DOM fully loaded.');
-
-            const controls = document.getElementById('controls');
-            if (controls) {
-                console.log('Controls element found on DOMContentLoaded:', controls);
-                controls.style.display = 'block';
-            } else {
-                console.error('Controls element not found on DOMContentLoaded!');
-            }
-
-            // Listen for keydown events using e.code instead of e.key
-            document.addEventListener('keydown', function(e) {
-                console.log(`Key pressed: alt:${e.altKey}, code:"${e.code}", key:"${e.key}"`);
-                if (e.altKey && e.code === 'KeyT') {
-                    const controls = document.getElementById('controls');
-                    if (controls) {
-                        controls.classList.toggle('hidden');
-                        console.log('UI toggled via Alt+T (using e.code)');
-                    } else {
-                        console.error('Controls element not found during keydown!');
-                    }
-                    e.preventDefault();
-                    e.stopPropagation();
-                }
-            });
-
-            // Additionally, add a click event for the toggle button
-            const toggleBtn = document.getElementById('toggle-controls');
-            if (toggleBtn) {
-                toggleBtn.addEventListener('click', () => {
-                    const controls = document.getElementById('controls');
-                    if (controls) {
-                        controls.classList.toggle('hidden');
-                        console.log('UI toggled via button click');
-                    } else {
-                        console.error('Controls element not found on toggle button click!');
-                    }
-                });
-            } else {
-                console.error('Toggle button (#toggle-controls) not found on DOMContentLoaded!');
-            }
-        });
-    </script>
 </body>
 </html>

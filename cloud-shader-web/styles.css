@@ -37,6 +37,58 @@ canvas {
     margin: 0;
 }
 
+.controls-header button {
+    background-color: #555;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 4px;
+    cursor: pointer;
+    min-width: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.controls-header button:hover {
+    background-color: #777;
+}
+
+.minimize-icon {
+    display: inline-block;
+    width: 14px;
+    height: 2px;
+    background-color: white;
+}
+
+.maximize-icon {
+    display: inline-block;
+    width: 14px;
+    height: 14px;
+    position: relative;
+}
+
+.maximize-icon:before,
+.maximize-icon:after {
+    content: '';
+    position: absolute;
+    background-color: white;
+}
+
+.maximize-icon:before {
+    width: 14px;
+    height: 2px;
+    top: 6px;
+    left: 0;
+}
+
+.maximize-icon:after {
+    width: 2px;
+    height: 14px;
+    top: 0;
+    left: 6px;
+}
+
 .controls-content {
     display: block;
 }

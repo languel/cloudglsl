@@ -298,12 +298,19 @@ function setupControls(params) {
     // Toggle controls visibility
     controls.toggle.addEventListener('click', () => {
         const content = controls.container.querySelector('.controls-content');
+        const toggleButton = controls.toggle;
+        
+        // Toggle only the content, not the entire controls panel
         if (content.style.display === 'none') {
             content.style.display = 'block';
-            controls.toggle.textContent = 'Hide';
+            // Show minimize icon
+            toggleButton.innerHTML = '<span class="minimize-icon"></span>';
+            toggleButton.title = 'Minimize controls panel';
         } else {
             content.style.display = 'none';
-            controls.toggle.textContent = 'Show';
+            // Show maximize icon
+            toggleButton.innerHTML = '<span class="maximize-icon"></span>';
+            toggleButton.title = 'Expand controls panel';
         }
     });
     
