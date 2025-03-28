@@ -1,6 +1,6 @@
 # Cloud Shader Web
 
-This project is a minimal webpage that displays a cloud shader using WebGL. It allows users to control various dynamic parameters of the shader through a simple user interface that can be toggled on and off.
+This project is a minimal webpage that displays a cloud shader using WebGL. It allows users to control various dynamic parameters of the shader through a simple user interface that can be toggled on and off. The project now also supports external control via MIDI devices with temporal smoothing for precise parameter adjustments.
 
 ## Project Structure
 
@@ -41,6 +41,26 @@ The following parameters can be controlled through the UI:
 
 Feel free to experiment with these parameters to create different cloud effects.
 
+## MIDI Control
+
+The cloud shader can be controlled using external MIDI devices:
+
+- **MIDI Protocol**: Uses the Web MIDI API to receive Control Change (CC) messages
+- **Parameter Mapping**: Each shader parameter is mapped to a specific MIDI CC number (0-20)
+- **Temporal Smoothing**: MIDI input (0-127) is smoothed over time for higher precision control
+- **Adjustable Interpolation**: Control how quickly parameters respond to MIDI changes (0-10 seconds)
+- **Manual Override**: UI controls take precedence when manually adjusted
+
+For details on the MIDI implementation, refer to:
+- `doc/MIDI_control_protocol.md` - Full documentation of CC mappings
+- `doc/EXECUTIVE_SUMMARY.md` - Technical overview of the implementation
+
+### MIDI Requirements
+
+- Requires Chrome or Edge browser (Web MIDI API support)
+- Any standard MIDI controller that can send CC messages
+- No additional software needed - direct browser connection
+
 ## Keyboard Shortcuts
 
 - **Alt+U**: Toggle the entire UI on/off.
@@ -49,3 +69,10 @@ Feel free to experiment with these parameters to create different cloud effects.
 ## Initial inspiration
 
 [Shadertoy: 2D Clouds by drift](https://www.shadertoy.com/view/4tdSWr)
+
+## Future Development
+
+This project is set up for expansion with additional control interfaces:
+- OSC (Open Sound Control) via WebSocket bridge
+- Direct WebSocket control for remote/collaborative usage
+- Parameter preset system
