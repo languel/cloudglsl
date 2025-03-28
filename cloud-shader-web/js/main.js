@@ -333,25 +333,48 @@ function setupControls(params) {
         return [r, g, b];
     }
     
+    // Helper function to convert RGB array to hex color
+    function rgbToHex(rgb) {
+        const r = Math.round(rgb[0] * 255).toString(16).padStart(2, '0');
+        const g = Math.round(rgb[1] * 255).toString(16).padStart(2, '0');
+        const b = Math.round(rgb[2] * 255).toString(16).padStart(2, '0');
+        return `#${r}${g}${b}`;
+    }
+    
     // Set up initial colors
     if (controls.cloudColor) {
         params.cloudcolour = hexToRGB(controls.cloudColor.value);
+        // Update MIDI targets with initial values
+        controlState.midiTargets.cloudcolour = [...params.cloudcolour];
+        
         controls.cloudColor.addEventListener('input', (e) => {
             params.cloudcolour = hexToRGB(e.target.value);
+            // Update MIDI targets to match
+            controlState.midiTargets.cloudcolour = [...params.cloudcolour];
         });
     }
     
     if (controls.skyColor1) {
         params.skycolour1 = hexToRGB(controls.skyColor1.value);
+        // Update MIDI targets with initial values
+        controlState.midiTargets.skycolour1 = [...params.skycolour1];
+        
         controls.skyColor1.addEventListener('input', (e) => {
             params.skycolour1 = hexToRGB(e.target.value);
+            // Update MIDI targets to match
+            controlState.midiTargets.skycolour1 = [...params.skycolour1];
         });
     }
     
     if (controls.skyColor2) {
         params.skycolour2 = hexToRGB(controls.skyColor2.value);
+        // Update MIDI targets with initial values
+        controlState.midiTargets.skycolour2 = [...params.skycolour2];
+        
         controls.skyColor2.addEventListener('input', (e) => {
             params.skycolour2 = hexToRGB(e.target.value);
+            // Update MIDI targets to match
+            controlState.midiTargets.skycolour2 = [...params.skycolour2];
         });
     }
     
