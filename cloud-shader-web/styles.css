@@ -22,6 +22,8 @@ canvas {
     font-family: Arial, sans-serif;
     width: 300px;
     z-index: 1000;
+    max-height: 90vh;
+    overflow-y: auto;
 }
 
 .controls-header {
@@ -40,7 +42,37 @@ canvas {
 }
 
 .control-group {
-    margin-bottom: 10px;
+    margin-bottom: 15px;
+}
+
+.control-group label {
+    display: inline-block;
+    margin-bottom: 3px;
+    margin-right: 10px;
+}
+
+.control-group span {
+    float: right;
+    color: #aaa;
+}
+
+.control-group input[type="range"] {
+    width: 100%;
+    clear: both;
+    display: block;
+    margin-top: 2px;
+}
+
+.control-section {
+    margin-top: 20px;
+    border-top: 1px solid rgba(255, 255, 255, 0.2);
+    padding-top: 10px;
+}
+
+.control-section h4 {
+    margin-top: 0;
+    margin-bottom: 15px;
+    color: #aaa;
 }
 
 label {
@@ -50,6 +82,15 @@ label {
 
 input[type="range"] {
     width: 100%;
+}
+
+input[type="color"] {
+    width: 100%;
+    height: 25px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-top: 2px;
 }
 
 button {

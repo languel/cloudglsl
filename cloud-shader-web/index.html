@@ -109,6 +109,23 @@
                 </div>
             </div>
         </div>
+    </div>
+
+    <!-- Important: Load shader.js before main.js -->
+    <script src="js/shader.js"></script>
+    <script src="js/main.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            console.log('DOM fully loaded.');
+
+            const controls = document.getElementById('controls');
+            if (controls) {
+                console.log('Controls element found on DOMContentLoaded:', controls);
+                controls.style.display = 'block';
+            } else {
+                console.error('Controls element not found on DOMContentLoaded!');
+            }
+
             // Listen for keydown events using e.code instead of e.key
             document.addEventListener('keydown', function(e) {
                 console.log(`Key pressed: alt:${e.altKey}, code:"${e.code}", key:"${e.key}"`);

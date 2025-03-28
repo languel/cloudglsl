@@ -29,11 +29,13 @@ document.addEventListener('DOMContentLoaded', () => {
         cloudcover: 0.2,
         cloudalpha: 8.0,
         skytint: 0.5,
-        skycolour1: [0.2, 0.4, 0.6],
-        skycolour2: [0.4, 0.7, 1.0],
-        moveDirection: [1.0, 0.0], // Direction vector for cloud movement (x, y)
-        u_seed: 0.0,               // Added seed parameter
-        u_noiseOffset: 0.0         // Added noise offset parameter
+        skycolour1: [0.2, 0.4, 0.6],  // Default sky top color (will be updated by color picker)
+        skycolour2: [0.4, 0.7, 1.0],  // Default sky bottom color (will be updated by color picker)
+        cloudcolour: [1.1, 1.1, 0.9], // Default cloud color (will be updated by color picker)
+        moveDirection: [1.0, 0.0],    // Direction vector for cloud movement (x, y)
+        u_seed: 0.0,                  // Seed parameter
+        u_noiseOffset: 0.0,           // Noise offset parameter
+        animationSpeed: 0.05          // Animation speed parameter
     };
     
     // Setup shader program
@@ -79,8 +81,8 @@ document.addEventListener('DOMContentLoaded', () => {
         
         // If auto-animation is enabled, update the seed
         if (autoAnimate) {
-            // Smoothly vary the seed over time
-            shaderParams.u_seed = (currentTime * variationSpeed) % 10.0;
+            // Smoothly vary the seed over time using the animation speed parameter
+            shaderParams.u_seed = (currentTime * shaderParams.animationSpeed) % 10.0;
             
             // Update the UI slider to match
             if (noiseSeedControl && noiseSeedValue) {
@@ -221,6 +223,7 @@ function drawScene(gl, program, bufferInfo, params, currentTime) {
         skytint: gl.getUniformLocation(program, 'skytint'),
         skycolour1: gl.getUniformLocation(program, 'skycolour1'),
         skycolour2: gl.getUniformLocation(program, 'skycolour2'),
+        cloudcolour: gl.getUniformLocation(program, 'cloudcolour'),
         moveDirection: gl.getUniformLocation(program, 'moveDirection'),
         u_seed: gl.getUniformLocation(program, 'u_seed'),
         u_noiseOffset: gl.getUniformLocation(program, 'u_noiseOffset')
@@ -237,6 +240,7 @@ function drawScene(gl, program, bufferInfo, params, currentTime) {
     gl.uniform1f(uniformLocations.skytint, params.skytint);
     gl.uniform3fv(uniformLocations.skycolour1, params.skycolour1);
     gl.uniform3fv(uniformLocations.skycolour2, params.skycolour2);
+    gl.uniform3fv(uniformLocations.cloudcolour, params.cloudcolour);
     gl.uniform2fv(uniformLocations.moveDirection, params.moveDirection);
     
     // Always pass the noise parameters from the params object
@@ -264,7 +268,13 @@ function setupControls(params) {
         directionY: document.getElementById('directionY'),
         // Add noise controls
         noiseSeed: document.getElementById('noiseSeed'),
-        noiseOffset: document.getElementById('noiseOffset')
+        noiseOffset: document.getElementById('noiseOffset'),
+        // Add animation speed control
+        animationSpeed: document.getElementById('animationSpeed'),
+        // Add color pickers
+        cloudColor: document.getElementById('cloudColor'),
+        skyColor1: document.getElementById('skyColor1'),
+        skyColor2: document.getElementById('skyColor2')
     };
     
     // Setup values display
@@ -280,7 +290,9 @@ function setupControls(params) {
         directionY: document.getElementById('directionY-value'),
         // Add noise value displays
         noiseSeed: document.getElementById('noiseSeed-value'),
-        noiseOffset: document.getElementById('noiseOffset-value')
+        noiseOffset: document.getElementById('noiseOffset-value'),
+        // Add animation speed value display
+        animationSpeed: document.getElementById('animationSpeed-value')
     };
     
     // Toggle controls visibility
@@ -295,9 +307,40 @@ function setupControls(params) {
         }
     });
     
+    // Helper function to convert hex color to RGB array with values from 0.0 to 1.0
+    function hexToRGB(hex) {
+        const r = parseInt(hex.substr(1, 2), 16) / 255;
+        const g = parseInt(hex.substr(3, 2), 16) / 255;
+        const b = parseInt(hex.substr(5, 2), 16) / 255;
+        return [r, g, b];
+    }
+    
+    // Set up initial colors
+    if (controls.cloudColor) {
+        params.cloudcolour = hexToRGB(controls.cloudColor.value);
+        controls.cloudColor.addEventListener('input', (e) => {
+            params.cloudcolour = hexToRGB(e.target.value);
+        });
+    }
+    
+    if (controls.skyColor1) {
+        params.skycolour1 = hexToRGB(controls.skyColor1.value);
+        controls.skyColor1.addEventListener('input', (e) => {
+            params.skycolour1 = hexToRGB(e.target.value);
+        });
+    }
+    
+    if (controls.skyColor2) {
+        params.skycolour2 = hexToRGB(controls.skyColor2.value);
+        controls.skyColor2.addEventListener('input', (e) => {
+            params.skycolour2 = hexToRGB(e.target.value);
+        });
+    }
+    
     // Set up event listeners for sliders
     for (const param in controls) {
-        if (param !== 'container' && param !== 'toggle') {
+        if (param !== 'container' && param !== 'toggle' && 
+            param !== 'cloudColor' && param !== 'skyColor1' && param !== 'skyColor2') {
             if (param === 'directionX' || param === 'directionY') {
                 // Special handling for direction parameters
                 controls[param].addEventListener('input', (e) => {
@@ -313,6 +356,12 @@ function setupControls(params) {
                     const uniformName = param === 'noiseSeed' ? 'u_seed' : 'u_noiseOffset';
                     params[uniformName] = value;
                     valueElements[param].textContent = value.toFixed(2); // Changed to 2 decimals
+                });
+            } else if (param === 'animationSpeed') {
+                // Special handling for animation speed
+                controls[param].addEventListener('input', (e) => {
+                    params.animationSpeed = parseFloat(e.target.value);
+                    valueElements[param].textContent = params.animationSpeed.toFixed(3);
                 });
             } else {
                 // Handle other parameters with appropriate precision

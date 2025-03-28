@@ -14,6 +14,7 @@ uniform float cloudalpha;
 uniform float skytint;
 uniform vec3 skycolour1;
 uniform vec3 skycolour2;
+uniform vec3 cloudcolour;  // New: Custom cloud color
 uniform vec2 moveDirection; // Cloud movement (x,y)
 // Existing seed; used to shift the noise pattern
 uniform float u_seed;
@@ -117,9 +118,10 @@ void main() {
     c += c1;
     
     vec3 skycolour = mix(skycolour2, skycolour1, p.y);
-    vec3 cloudcolour = vec3(1.1, 1.1, 0.9) * clamp((clouddark + cloudlight * c), 0.0, 1.0);
+    // Use the custom cloud color instead of hardcoded value
+    vec3 cloudcolor = cloudcolour * clamp((clouddark + cloudlight * c), 0.0, 1.0);
     f = cloudcover + cloudalpha * f * r;
-    vec3 result = mix(skycolour, clamp(skytint * skycolour + cloudcolour, 0.0, 1.0), clamp(f + c, 0.0, 1.0));
+    vec3 result = mix(skycolour, clamp(skytint * skycolour + cloudcolor, 0.0, 1.0), clamp(f + c, 0.0, 1.0));
     
     gl_FragColor = vec4(result, 1.0);
 }
