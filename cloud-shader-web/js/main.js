@@ -30,7 +30,8 @@ document.addEventListener('DOMContentLoaded', () => {
         cloudalpha: 8.0,
         skytint: 0.5,
         skycolour1: [0.2, 0.4, 0.6],
-        skycolour2: [0.4, 0.7, 1.0]
+        skycolour2: [0.4, 0.7, 1.0],
+        moveDirection: [1.0, 0.0] // Direction vector for cloud movement (x, y)
     };
     
     // Setup shader program
@@ -63,6 +64,25 @@ document.addEventListener('DOMContentLoaded', () => {
         canvas.width = window.innerWidth;
         canvas.height = window.innerHeight;
         gl.viewport(0, 0, canvas.width, canvas.height);
+    });
+
+    // Add keyboard shortcut for UI toggle (Alt+U)
+    document.addEventListener('keydown', function(e) {
+        // Check if Alt+U was pressed
+        if (e.altKey && (e.key === 'u' || e.key === 'U')) {
+            const controls = document.getElementById('controls');
+            
+            // Toggle visibility using classList instead of style
+            if (controls.classList.contains('hidden')) {
+                controls.classList.remove('hidden');
+                console.log('UI shown');
+            } else {
+                controls.classList.add('hidden');
+                console.log('UI hidden');
+            }
+            
+            e.preventDefault(); // Prevent default browser behavior
+        }
     });
 });
 
@@ -158,7 +178,8 @@ function drawScene(gl, program, bufferInfo, params, currentTime) {
         cloudalpha: gl.getUniformLocation(program, 'cloudalpha'),
         skytint: gl.getUniformLocation(program, 'skytint'),
         skycolour1: gl.getUniformLocation(program, 'skycolour1'),
-        skycolour2: gl.getUniformLocation(program, 'skycolour2')
+        skycolour2: gl.getUniformLocation(program, 'skycolour2'),
+        moveDirection: gl.getUniformLocation(program, 'moveDirection')
     };
     
     gl.uniform3f(uniformLocations.iResolution, gl.canvas.width, gl.canvas.height, 1.0);
@@ -172,6 +193,7 @@ function drawScene(gl, program, bufferInfo, params, currentTime) {
     gl.uniform1f(uniformLocations.skytint, params.skytint);
     gl.uniform3fv(uniformLocations.skycolour1, params.skycolour1);
     gl.uniform3fv(uniformLocations.skycolour2, params.skycolour2);
+    gl.uniform2fv(uniformLocations.moveDirection, params.moveDirection);
     
     // Draw the rectangle
     gl.drawArrays(gl.TRIANGLE_STRIP, 0, bufferInfo.vertexCount);
@@ -189,7 +211,9 @@ function setupControls(params) {
         cloudlight: document.getElementById('cloudlight'),
         cloudcover: document.getElementById('cloudcover'),
         cloudalpha: document.getElementById('cloudalpha'),
-        skytint: document.getElementById('skytint')
+        skytint: document.getElementById('skytint'),
+        directionX: document.getElementById('directionX'),
+        directionY: document.getElementById('directionY')
     };
     
     // Setup values display
@@ -200,7 +224,9 @@ function setupControls(params) {
         cloudlight: document.getElementById('cloudlight-value'),
         cloudcover: document.getElementById('cloudcover-value'),
         cloudalpha: document.getElementById('cloudalpha-value'),
-        skytint: document.getElementById('skytint-value')
+        skytint: document.getElementById('skytint-value'),
+        directionX: document.getElementById('directionX-value'),
+        directionY: document.getElementById('directionY-value')
     };
     
     // Toggle controls visibility
@@ -218,10 +244,20 @@ function setupControls(params) {
     // Set up event listeners for sliders
     for (const param in controls) {
         if (param !== 'container' && param !== 'toggle') {
-            controls[param].addEventListener('input', (e) => {
-                params[param] = parseFloat(e.target.value);
-                valueElements[param].textContent = params[param].toFixed(2);
-            });
+            if (param === 'directionX' || param === 'directionY') {
+                // Special handling for direction parameters
+                controls[param].addEventListener('input', (e) => {
+                    const index = param === 'directionX' ? 0 : 1;
+                    params.moveDirection[index] = parseFloat(e.target.value);
+                    valueElements[param].textContent = params.moveDirection[index].toFixed(1);
+                });
+            } else {
+                // Handle other parameters
+                controls[param].addEventListener('input', (e) => {
+                    params[param] = parseFloat(e.target.value);
+                    valueElements[param].textContent = params[param].toFixed(2);
+                });
+            }
         }
     }
 }

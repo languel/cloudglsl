@@ -5,6 +5,17 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cloud Shader</title>
     <link rel="stylesheet" href="styles.css">
+    <style>
+        /* Ensure the controls are initially visible */
+        #controls {
+            display: block;
+        }
+        
+        /* Class for hiding the UI with the keyboard shortcut */
+        .hidden {
+            display: none !important;
+        }
+    </style>
 </head>
 <body>
     <canvas id="glCanvas"></canvas>
@@ -50,11 +61,67 @@
                 <input type="range" id="skytint" min="0.0" max="1.0" step="0.01" value="0.5">
                 <span id="skytint-value">0.5</span>
             </div>
+            <!-- New direction controls -->
+            <div class="control-group">
+                <label for="directionX">Direction X:</label>
+                <input type="range" id="directionX" min="-1.0" max="1.0" step="0.1" value="1.0">
+                <span id="directionX-value">1.0</span>
+            </div>
+            <div class="control-group">
+                <label for="directionY">Direction Y:</label>
+                <input type="range" id="directionY" min="-1.0" max="1.0" step="0.1" value="0.0">
+                <span id="directionY-value">0.0</span>
+            </div>
         </div>
     </div>
 
     <!-- Important: Load shader.js before main.js -->
     <script src="js/shader.js"></script>
     <script src="js/main.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            console.log('DOM fully loaded.');
+
+            const controls = document.getElementById('controls');
+            if (controls) {
+                console.log('Controls element found on DOMContentLoaded:', controls);
+                controls.style.display = 'block';
+            } else {
+                console.error('Controls element not found on DOMContentLoaded!');
+            }
+
+            // Listen for keydown events using e.code instead of e.key
+            document.addEventListener('keydown', function(e) {
+                console.log(`Key pressed: alt:${e.altKey}, code:"${e.code}", key:"${e.key}"`);
+                if (e.altKey && e.code === 'KeyT') {
+                    const controls = document.getElementById('controls');
+                    if (controls) {
+                        controls.classList.toggle('hidden');
+                        console.log('UI toggled via Alt+T (using e.code)');
+                    } else {
+                        console.error('Controls element not found during keydown!');
+                    }
+                    e.preventDefault();
+                    e.stopPropagation();
+                }
+            });
+
+            // Additionally, add a click event for the toggle button
+            const toggleBtn = document.getElementById('toggle-controls');
+            if (toggleBtn) {
+                toggleBtn.addEventListener('click', () => {
+                    const controls = document.getElementById('controls');
+                    if (controls) {
+                        controls.classList.toggle('hidden');
+                        console.log('UI toggled via button click');
+                    } else {
+                        console.error('Controls element not found on toggle button click!');
+                    }
+                });
+            } else {
+                console.error('Toggle button (#toggle-controls) not found on DOMContentLoaded!');
+            }
+        });
+    </script>
 </body>
 </html>

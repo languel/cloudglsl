@@ -31,4 +31,8 @@ The following parameters can be controlled through the UI:
 - **Cloud Alpha**: Controls the transparency of the clouds.
 - **Sky Tint**: Adjusts the tint of the sky.
 
-Feel free to experiment with these parameters to create different cloud effects!
+Feel free to experiment with these parameters to create different cloud effects.
+
+## Initial inspiration
+
+[Shadertoy: 2D Clouds by drift](https://www.shadertoy.com/view/4tdSWr)

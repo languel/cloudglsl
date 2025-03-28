@@ -14,6 +14,7 @@ uniform float cloudalpha;
 uniform float skytint;
 uniform vec3 skycolour1;
 uniform vec3 skycolour2;
+uniform vec2 moveDirection; // NEW: Direction of cloud movement (x,y)
 
 const mat2 m = mat2( 1.6,  1.2, -1.2,  1.6 );
 
@@ -57,11 +58,12 @@ void main() {
     //ridged noise shape
     float r = 0.0;
     uv *= cloudscale;
-    uv -= q - time;
+    // Modified to use direction
+    uv -= q - time * moveDirection;
     float weight = 0.8;
     for (int i=0; i<8; i++){
         r += abs(weight*noise( uv ));
-        uv = m*uv + time;
+        uv = m*uv + time * moveDirection;
         weight *= 0.7;
     }
     
@@ -69,11 +71,12 @@ void main() {
     float f = 0.0;
     uv = p*vec2(iResolution.x/iResolution.y,1.0);
     uv *= cloudscale;
-    uv -= q - time;
+    // Modified to use direction
+    uv -= q - time * moveDirection;
     weight = 0.7;
     for (int i=0; i<8; i++){
         f += weight*noise( uv );
-        uv = m*uv + time;
+        uv = m*uv + time * moveDirection;
         weight *= 0.6;
     }
     
@@ -84,11 +87,12 @@ void main() {
     time = iTime * speed * 2.0;
     uv = p*vec2(iResolution.x/iResolution.y,1.0);
     uv *= cloudscale*2.0;
-    uv -= q - time;
+    // Modified to use direction
+    uv -= q - time * moveDirection;
     weight = 0.4;
     for (int i=0; i<7; i++){
         c += weight*noise( uv );
-        uv = m*uv + time;
+        uv = m*uv + time * moveDirection;
         weight *= 0.6;
     }
     
@@ -97,11 +101,12 @@ void main() {
     time = iTime * speed * 3.0;
     uv = p*vec2(iResolution.x/iResolution.y,1.0);
     uv *= cloudscale*3.0;
-    uv -= q - time;
+    // Modified to use direction
+    uv -= q - time * moveDirection;
     weight = 0.4;
     for (int i=0; i<7; i++){
         c1 += abs(weight*noise( uv ));
-        uv = m*uv + time;
+        uv = m*uv + time * moveDirection;
         weight *= 0.6;
     }
     
@@ -127,6 +132,3 @@ var vertexShaderSource = `
         vTextureCoord = aVertexPosition.xy * 0.5 + 0.5;
     }
 `;
-
-// Remove this export statement - it's causing the error
-// export { fragmentShaderSource, vertexShaderSource };
