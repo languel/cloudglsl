@@ -31,7 +31,9 @@ document.addEventListener('DOMContentLoaded', () => {
         skytint: 0.5,
         skycolour1: [0.2, 0.4, 0.6],
         skycolour2: [0.4, 0.7, 1.0],
-        moveDirection: [1.0, 0.0] // Direction vector for cloud movement (x, y)
+        moveDirection: [1.0, 0.0], // Direction vector for cloud movement (x, y)
+        u_seed: 0.0,               // Added seed parameter
+        u_noiseOffset: 0.0         // Added noise offset parameter
     };
     
     // Setup shader program
@@ -42,21 +44,66 @@ document.addEventListener('DOMContentLoaded', () => {
         return;
     }
     
+    // Setup buffer for rectangle that will cover the entire canvas
+    const bufferInfo = initBuffers(gl);
+    
+    // Animation settings
+    let autoAnimate = false; // Set to false by default
+    const variationSpeed = 0.05; // Slower for more subtle changes
+    
     // Setup UI controls
     setupControls(shaderParams);
     
-    // Setup buffer for rectangle that will cover the entire canvas
-    const bufferInfo = initBuffers(gl);
+    // Get references to the new UI controls
+    const noiseSeedControl = document.getElementById('noiseSeed');
+    const noiseSeedValue = document.getElementById('noiseSeed-value');
+    const noiseOffsetControl = document.getElementById('noiseOffset');
+    const noiseOffsetValue = document.getElementById('noiseOffset-value');
+    const autoAnimateControl = document.getElementById('autoAnimate');
+
+    // Toggle auto-animation
+    if (autoAnimateControl) {
+        autoAnimateControl.addEventListener('change', (e) => {
+            autoAnimate = e.target.checked;
+            if (noiseSeedControl) {
+                noiseSeedControl.disabled = autoAnimate;
+            }
+        });
+    }
     
     // Start the rendering loop
     const startTime = Date.now();
     
     function render() {
         const currentTime = (Date.now() - startTime) / 1000.0;
+        
+        // If auto-animation is enabled, update the seed
+        if (autoAnimate) {
+            // Smoothly vary the seed over time
+            shaderParams.u_seed = (currentTime * variationSpeed) % 10.0;
+            
+            // Update the UI slider to match
+            if (noiseSeedControl && noiseSeedValue) {
+                noiseSeedControl.value = shaderParams.u_seed.toFixed(1);
+                noiseSeedValue.textContent = shaderParams.u_seed.toFixed(1);
+            }
+        }
+        
+        // Get current values from the noise sliders if not in auto-animate mode
+        if (!autoAnimate && noiseSeedControl) {
+            shaderParams.u_seed = parseFloat(noiseSeedControl.value);
+        }
+        
+        if (noiseOffsetControl) {
+            shaderParams.u_noiseOffset = parseFloat(noiseOffsetControl.value);
+        }
+        
+        // Draw the scene with updated parameters
         drawScene(gl, program, bufferInfo, shaderParams, currentTime);
         requestAnimationFrame(render);
     }
     
+    // Start render loop
     render();
     
     // Handle window resize
@@ -65,23 +112,18 @@ document.addEventListener('DOMContentLoaded', () => {
         canvas.height = window.innerHeight;
         gl.viewport(0, 0, canvas.width, canvas.height);
     });
-
-    // Add keyboard shortcut for UI toggle (Alt+U)
+    
+    // Add keyboard shortcut for UI toggle
     document.addEventListener('keydown', function(e) {
-        // Check if Alt+U was pressed
-        if (e.altKey && (e.key === 'u' || e.key === 'U')) {
+        // Check if Alt+T was pressed
+        if (e.altKey && e.code === 'KeyT') {
             const controls = document.getElementById('controls');
-            
-            // Toggle visibility using classList instead of style
-            if (controls.classList.contains('hidden')) {
-                controls.classList.remove('hidden');
-                console.log('UI shown');
-            } else {
-                controls.classList.add('hidden');
-                console.log('UI hidden');
+            if (controls) {
+                controls.classList.toggle('hidden');
+                console.log('UI toggled via Alt+T');
             }
-            
-            e.preventDefault(); // Prevent default browser behavior
+            e.preventDefault();
+            e.stopPropagation();
         }
     });
 });
@@ -179,7 +221,9 @@ function drawScene(gl, program, bufferInfo, params, currentTime) {
         skytint: gl.getUniformLocation(program, 'skytint'),
         skycolour1: gl.getUniformLocation(program, 'skycolour1'),
         skycolour2: gl.getUniformLocation(program, 'skycolour2'),
-        moveDirection: gl.getUniformLocation(program, 'moveDirection')
+        moveDirection: gl.getUniformLocation(program, 'moveDirection'),
+        u_seed: gl.getUniformLocation(program, 'u_seed'),
+        u_noiseOffset: gl.getUniformLocation(program, 'u_noiseOffset')
     };
     
     gl.uniform3f(uniformLocations.iResolution, gl.canvas.width, gl.canvas.height, 1.0);
@@ -194,6 +238,10 @@ function drawScene(gl, program, bufferInfo, params, currentTime) {
     gl.uniform3fv(uniformLocations.skycolour1, params.skycolour1);
     gl.uniform3fv(uniformLocations.skycolour2, params.skycolour2);
     gl.uniform2fv(uniformLocations.moveDirection, params.moveDirection);
+    
+    // Always pass the noise parameters from the params object
+    gl.uniform1f(uniformLocations.u_seed, params.u_seed);
+    gl.uniform1f(uniformLocations.u_noiseOffset, params.u_noiseOffset);
     
     // Draw the rectangle
     gl.drawArrays(gl.TRIANGLE_STRIP, 0, bufferInfo.vertexCount);
@@ -213,7 +261,10 @@ function setupControls(params) {
         cloudalpha: document.getElementById('cloudalpha'),
         skytint: document.getElementById('skytint'),
         directionX: document.getElementById('directionX'),
-        directionY: document.getElementById('directionY')
+        directionY: document.getElementById('directionY'),
+        // Add noise controls
+        noiseSeed: document.getElementById('noiseSeed'),
+        noiseOffset: document.getElementById('noiseOffset')
     };
     
     // Setup values display
@@ -226,7 +277,10 @@ function setupControls(params) {
         cloudalpha: document.getElementById('cloudalpha-value'),
         skytint: document.getElementById('skytint-value'),
         directionX: document.getElementById('directionX-value'),
-        directionY: document.getElementById('directionY-value')
+        directionY: document.getElementById('directionY-value'),
+        // Add noise value displays
+        noiseSeed: document.getElementById('noiseSeed-value'),
+        noiseOffset: document.getElementById('noiseOffset-value')
     };
     
     // Toggle controls visibility
@@ -250,6 +304,15 @@ function setupControls(params) {
                     const index = param === 'directionX' ? 0 : 1;
                     params.moveDirection[index] = parseFloat(e.target.value);
                     valueElements[param].textContent = params.moveDirection[index].toFixed(1);
+                });
+            } else if (param === 'noiseSeed' || param === 'noiseOffset') {
+                // Special handling for noise parameters
+                controls[param].addEventListener('input', (e) => {
+                    const value = parseFloat(e.target.value);
+                    // Map parameter names to shader uniform names
+                    const uniformName = param === 'noiseSeed' ? 'u_seed' : 'u_noiseOffset';
+                    params[uniformName] = value;
+                    valueElements[param].textContent = value.toFixed(1);
                 });
             } else {
                 // Handle other parameters
