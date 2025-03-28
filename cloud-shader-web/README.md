@@ -76,3 +76,5 @@ This project is set up for expansion with additional control interfaces:
 - OSC (Open Sound Control) via WebSocket bridge
 - Direct WebSocket control for remote/collaborative usage
 - Parameter preset system
+
+![screenshot](cloud-shader-screenshot.png)
