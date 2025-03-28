@@ -113,14 +113,14 @@ document.addEventListener('DOMContentLoaded', () => {
         gl.viewport(0, 0, canvas.width, canvas.height);
     });
     
-    // Add keyboard shortcut for UI toggle
+    // Add keyboard shortcut for UI toggle (Alt+U)
     document.addEventListener('keydown', function(e) {
-        // Check if Alt+T was pressed
-        if (e.altKey && e.code === 'KeyT') {
+        // Check if Alt+U was pressed
+        if (e.altKey && (e.key === 'u' || e.key === 'U' || e.code === 'KeyU')) {
             const controls = document.getElementById('controls');
             if (controls) {
-                controls.classList.toggle('hidden');
-                console.log('UI toggled via Alt+T');
+                controls.style.display = controls.style.display === 'none' ? 'block' : 'none';
+                console.log('UI toggled via Alt+U');
             }
             e.preventDefault();
             e.stopPropagation();
@@ -303,7 +303,7 @@ function setupControls(params) {
                 controls[param].addEventListener('input', (e) => {
                     const index = param === 'directionX' ? 0 : 1;
                     params.moveDirection[index] = parseFloat(e.target.value);
-                    valueElements[param].textContent = params.moveDirection[index].toFixed(1);
+                    valueElements[param].textContent = params.moveDirection[index].toFixed(3); // Changed to 3 decimals for finer control
                 });
             } else if (param === 'noiseSeed' || param === 'noiseOffset') {
                 // Special handling for noise parameters
@@ -312,13 +312,20 @@ function setupControls(params) {
                     // Map parameter names to shader uniform names
                     const uniformName = param === 'noiseSeed' ? 'u_seed' : 'u_noiseOffset';
                     params[uniformName] = value;
-                    valueElements[param].textContent = value.toFixed(1);
+                    valueElements[param].textContent = value.toFixed(2); // Changed to 2 decimals
                 });
             } else {
-                // Handle other parameters
+                // Handle other parameters with appropriate precision
                 controls[param].addEventListener('input', (e) => {
                     params[param] = parseFloat(e.target.value);
-                    valueElements[param].textContent = params[param].toFixed(2);
+                    // Use different precision based on the parameter
+                    if (param === 'cloudscale') {
+                        valueElements[param].textContent = params[param].toFixed(2);
+                    } else if (param === 'speed') {
+                        valueElements[param].textContent = params[param].toFixed(3);
+                    } else {
+                        valueElements[param].textContent = params[param].toFixed(2);
+                    }
                 });
             }
         }
