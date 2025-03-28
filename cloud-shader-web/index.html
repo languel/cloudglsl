@@ -77,6 +77,11 @@
                 <input type="checkbox" id="autoAnimate">
             </div>
             <div class="control-group">
+                <label for="animationSpeed">Animation Speed:</label>
+                <input type="range" id="animationSpeed" min="0.01" max="0.2" step="0.001" value="0.05">
+                <span id="animationSpeed-value">0.05</span>
+            </div>
+            <div class="control-group">
                 <label for="noiseSeed">Noise Seed:</label>
                 <input type="range" id="noiseSeed" min="0.0" max="10.0" step="0.01" value="0.0">
                 <span id="noiseSeed-value">0.0</span>
@@ -86,24 +91,24 @@
                 <input type="range" id="noiseOffset" min="0.0" max="10.0" step="0.01" value="0.0">
                 <span id="noiseOffset-value">0.0</span>
             </div>
+            
+            <!-- Color Controls Section -->
+            <div class="control-section">
+                <h4>Color Controls</h4>
+                <div class="control-group">
+                    <label for="cloudColor">Cloud Color:</label>
+                    <input type="color" id="cloudColor" value="#FFFCE5">
+                </div>
+                <div class="control-group">
+                    <label for="skyColor1">Sky Color (Top):</label>
+                    <input type="color" id="skyColor1" value="#334D99">
+                </div>
+                <div class="control-group">
+                    <label for="skyColor2">Sky Color (Bottom):</label>
+                    <input type="color" id="skyColor2" value="#6BB2FF">
+                </div>
+            </div>
         </div>
-    </div>
-
-    <!-- Important: Load shader.js before main.js -->
-    <script src="js/shader.js"></script>
-    <script src="js/main.js"></script>
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            console.log('DOM fully loaded.');
-
-            const controls = document.getElementById('controls');
-            if (controls) {
-                console.log('Controls element found on DOMContentLoaded:', controls);
-                controls.style.display = 'block';
-            } else {
-                console.error('Controls element not found on DOMContentLoaded!');
-            }
-
             // Listen for keydown events using e.code instead of e.key
             document.addEventListener('keydown', function(e) {
                 console.log(`Key pressed: alt:${e.altKey}, code:"${e.code}", key:"${e.key}"`);
